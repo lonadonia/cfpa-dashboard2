@@ -1,0 +1,21 @@
+# Abhängigkeiten / Werkzeuge (für den Betrieb nicht nötig)
+node_modules/
+
+# Laufzeitdaten des lokalen Servers (Texte, Logo, Szenen) – bewusst nicht im Repository
+data/
+
+# Umgebungsvariablen und Zugangsdaten
+.env
+.env.*
+!.env.example
+
+# Hosting / Editor / System
+.vercel/
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+
+# Testausgaben
+test-results/
+playwright-report/

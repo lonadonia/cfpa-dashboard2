@@ -1,0 +1,76 @@
+/* Seitenrahmen der Overlay-Ansicht (overlay.html) */
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+#viewport {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* Hintergründe für Tests und Sonderfälle (?bg=…) */
+html[data-bg="checker"] body {
+  background-color: #2b2d31;
+  background-image:
+    linear-gradient(45deg, #3a3d42 25%, transparent 25%),
+    linear-gradient(-45deg, #3a3d42 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #3a3d42 75%),
+    linear-gradient(-45deg, transparent 75%, #3a3d42 75%);
+  background-size: 40px 40px;
+  background-position: 0 0, 0 20px, 20px -20px, -20px 0;
+}
+html[data-bg="demo"] #stage { background: #15171a url('../assets/demo/demo-bg.svg') center / cover no-repeat; }
+html[data-bg="green"] body { background: #00b140; }
+html[data-bg="black"] body { background: #000; }
+
+/* Kamera-Modus */
+.ov-camera {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
+}
+.ov-camera.is-mirrored { transform: scaleX(-1); }
+
+/* Hinweise (nie in OBS sichtbar) */
+.ov-toast {
+  position: fixed;
+  left: 50%;
+  top: 20px;
+  z-index: 10;
+  max-width: 90vw;
+  padding: 10px 16px;
+  font: 600 15px/1.3 'Inter', system-ui, sans-serif;
+  color: #fff;
+  background: rgba(15, 16, 18, .92);
+  border-left: 4px solid #E30613;
+  border-radius: 4px;
+  transform: translate(-50%, -20px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+}
+.ov-toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+
+.ov-hint {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 10;
+  padding: 10px 14px;
+  font: 600 14px/1.3 'Inter', system-ui, sans-serif;
+  color: #fff;
+  background: rgba(15, 16, 18, .9);
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.ov-hint[hidden] { display: none; }

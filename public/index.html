@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CrossFit Streaming-Overlay</title>
+  <meta name="description" content="Browser-Overlay für CrossFit-Livestreams mit Timer, Logo und drei anpassbaren Zonen – für OBS, Streamlabs und Zoom.">
+  <meta name="theme-color" content="#0c0d0f">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/ui.css">
+  <link rel="stylesheet" href="css/overlay.css">
+  <link rel="stylesheet" href="css/start.css">
+</head>
+<body>
+  <header class="s-head">
+    <span class="s-brand"><span class="brand__mark" aria-hidden="true"></span>CrossFit <b>Overlay</b></span>
+    <span id="conn" class="status" role="status">Prüfe Verbindung …</span>
+  </header>
+
+  <main>
+    <section class="s-hero">
+      <div class="s-hero__copy">
+        <p class="s-kicker">Streaming-Overlay · HTML5 · 1920 × 1080</p>
+        <h1>Timer, Logo und WOD – live über deinem Kamerabild.</h1>
+        <p class="s-lead">Drei anpassbare Zonen, transparenter Hintergrund, Steuerung vom Laptop oder Smartphone. Läuft in OBS, Streamlabs und über die OBS Virtual Camera in Zoom.</p>
+        <div class="row">
+          <a class="btn btn--primary s-cta" href="control.html" id="go-control"><i data-icon="layers"></i>Regie öffnen</a>
+          <a class="btn s-cta" href="overlay.html?bg=demo" target="_blank" rel="noopener"><i data-icon="monitor"></i>Overlay ansehen</a>
+        </div>
+      </div>
+      <div class="s-hero__preview" aria-label="Live-Vorschau des Overlays">
+        <div class="s-preview" id="preview"><div id="preview-stage"></div></div>
+        <p class="hint">Live-Vorschau mit Demo-Hintergrund. In OBS ist der Hintergrund transparent.</p>
+      </div>
+    </section>
+
+    <section class="s-cards" aria-label="Ansichten">
+      <a class="s-card" href="control.html">
+        <i data-icon="layers"></i>
+        <h2>Regie</h2>
+        <p>Texte, Logo, Timer, Zonen, Szenen. Mit Live-Vorschau und Tastaturkürzeln.</p>
+        <span class="s-card__url">control.html</span>
+      </a>
+      <a class="s-card" href="overlay.html?bg=checker" target="_blank" rel="noopener">
+        <i data-icon="monitor"></i>
+        <h2>Overlay</h2>
+        <p>Die Seite für die Browserquelle in OBS oder Streamlabs (1920 × 1080, transparent).</p>
+        <span class="s-card__url" id="url-overlay">overlay.html</span>
+      </a>
+      <a class="s-card" href="remote.html" id="go-remote">
+        <i data-icon="phone"></i>
+        <h2>Fernbedienung</h2>
+        <p>Start, Pause, Reset, Szenen und Einblendungen vom Smartphone oder Tablet.</p>
+        <span class="s-card__url" id="url-remote">remote.html</span>
+      </a>
+      <a class="s-card" href="overlay.html?camera=1" target="_blank" rel="noopener">
+        <i data-icon="camera"></i>
+        <h2>Kamera-Modus</h2>
+        <p>Webcam mit Overlay in einem Fenster – Alternative ohne OBS (z. B. Bildschirmfreigabe).</p>
+        <span class="s-card__url">overlay.html?camera=1</span>
+      </a>
+    </section>
+
+    <section class="s-mode" id="mode-box" aria-live="polite"></section>
+
+    <section class="s-steps" aria-labelledby="steps-title">
+      <h2 class="section-title" id="steps-title">In drei Schritten live</h2>
+      <ol>
+        <li><b>Server starten.</b> <code>npm start</code> im Projektordner (oder <code>start-windows.bat</code> / <code>start-mac.command</code> doppelklicken).</li>
+        <li><b>OBS:</b> Browserquelle mit <code>http://localhost:8080/overlay.html</code>, 1920 × 1080, über die Kamera legen.</li>
+        <li><b>Zoom:</b> In OBS „Virtuelle Kamera starten“ und in Zoom die Kamera „OBS Virtual Camera“ wählen.</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="s-foot">
+    <span>Quellcode lokal sicherbar und ohne laufende Kosten betreibbar · keine externen Dienste</span>
+  </footer>
+
+  <script src="js/core/timer.js"></script>
+  <script src="js/core/state.js"></script>
+  <script src="js/client/sync.js"></script>
+  <script src="js/client/render.js"></script>
+  <script src="js/client/icons.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var CFO = window.CFO;
+      CFO.icons.hydrate();
+      var preview = document.getElementById('preview');
+      var stage = document.getElementById('preview-stage');
+      var renderer = CFO.render.create(stage, { mode: 'preview' });
+      function fit() { CFO.render.fit(stage, preview, 'width'); }
+      if (typeof ResizeObserver !== 'undefined') new ResizeObserver(fit).observe(preview);
+      fit();
+      var api = null;
+      function loop() { if (api) renderer.tick(api.now()); requestAnimationFrame(loop); }
+      CFO.sync.connect({
+        onState: function (s) { renderer.update(s); },
+        onStatus: function (st) {
+          var el = document.getElementById('conn');
+          el.setAttribute('data-state', st.mode === 'local' ? 'local' : st.connected ? 'ok' : 'error');
+          el.textContent = st.mode === 'local' ? 'Testmodus (ohne Server)' : st.connected ? 'Server läuft' : 'Server getrennt';
+        }
+      }).then(function (a) {
+        api = a;
+        requestAnimationFrame(loop);
+        var base = location.href.replace(/[?#].*$/, '').replace(/[^/]*$/, '');
+        var key = a.key ? '?key=' + encodeURIComponent(a.key) : '';
+        document.getElementById('url-overlay').textContent = base + 'overlay.html';
+        document.getElementById('go-control').href = 'control.html' + key;
+        document.getElementById('go-remote').href = 'remote.html' + key;
+        var box = document.getElementById('mode-box');
+        var title = document.createElement('h2');
+        title.className = 'section-title';
+        var p = document.createElement('p');
+        if (a.mode === 'server') {
+          title.textContent = 'Server-Modus aktiv';
+          p.textContent = 'OBS, Regie und Smartphones im selben WLAN sind live verbunden.';
+          box.appendChild(title);
+          box.appendChild(p);
+          if (a.info.lanUrls && a.info.lanUrls.length) {
+            var ul = document.createElement('ul');
+            a.info.lanUrls.forEach(function (u) {
+              var li = document.createElement('li');
+              var code = document.createElement('code');
+              code.textContent = u + 'remote.html' + key;
+              li.appendChild(document.createTextNode('Fernbedienung im WLAN: '));
+              li.appendChild(code);
+              ul.appendChild(li);
+            });
+            box.appendChild(ul);
+            document.getElementById('url-remote').textContent = a.info.lanUrls[0] + 'remote.html';
+          }
+        } else {
+          box.classList.add('is-local');
+          title.textContent = 'Testmodus (ohne Server)';
+          p.textContent = 'Diese Version läuft rein im Browser: Regie und Overlay synchronisieren sich zwischen Tabs dieses Browsers – ideal zum Ausprobieren. Für OBS-Browserquelle und Smartphone-Fernbedienung den lokalen Server starten (siehe README, Schritt 1).';
+          box.appendChild(title);
+          box.appendChild(p);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Regie · CrossFit Streaming-Overlay</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0c0d0f">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/ui.css">
+  <link rel="stylesheet" href="css/overlay.css">
+  <link rel="stylesheet" href="css/control.css">
+</head>
+<body>
+  <a class="skip" href="#panel">Zu den Einstellungen springen</a>
+
+  <header class="topbar">
+    <a class="brand" href="index.html" aria-label="Startseite">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__name">Overlay <b>Regie</b></span>
+    </a>
+    <span id="conn" class="status" role="status">Verbinde …</span>
+    <div class="topbar__actions">
+      <a class="btn btn--sm" href="overlay.html" target="_blank" rel="noopener" id="open-overlay"><i data-icon="monitor"></i><span>Overlay öffnen</span></a>
+      <a class="btn btn--sm" href="remote.html" target="_blank" rel="noopener" id="open-remote"><i data-icon="phone"></i><span>Fernbedienung</span></a>
+      <button class="btn btn--sm btn--ghost btn--icon" type="button" id="btn-help" aria-label="Tastaturkürzel anzeigen" title="Tastaturkürzel (?)"><i data-icon="keyboard"></i></button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- ================================================= Vorschau + Timer -->
+    <section class="monitor" aria-label="Live-Vorschau und Timer-Steuerung">
+      <div class="monitor__bar">
+        <h2 class="section-title">Live-Vorschau <span class="badge">1920×1080</span></h2>
+        <div class="row">
+          <div class="seg" id="preview-bg" role="group" aria-label="Vorschau-Hintergrund">
+            <button type="button" data-value="demo">Demo</button>
+            <button type="button" data-value="checker">Transparent</button>
+            <button type="button" data-value="black">Schwarz</button>
+          </div>
+          <label class="switch" title="Zonen in der Vorschau mit der Maus verschieben"><input type="checkbox" id="edit-layout"> <span>Zonen verschieben</span></label>
+        </div>
+      </div>
+
+      <div class="preview" id="preview" data-bg="demo">
+        <div id="preview-stage"></div>
+      </div>
+
+      <div class="transport" aria-label="Timer-Steuerung">
+        <div class="readout" aria-live="off">
+          <div class="readout__time" id="ro-time">0:00</div>
+          <div class="readout__meta">
+            <span class="readout__title" id="ro-title"></span>
+            <span class="readout__phase" id="ro-phase"></span>
+          </div>
+        </div>
+        <div class="transport__btns">
+          <button class="btn btn--icon tbtn" type="button" data-cmd="prev" aria-label="Intervall zurück (Pfeil links)" title="Intervall zurück (←)"><i data-icon="prev"></i></button>
+          <button class="btn btn--primary tbtn tbtn--main" type="button" id="btn-toggle" aria-label="Start (Leertaste)"><i data-icon="play"></i><span>Start</span></button>
+          <button class="btn btn--icon tbtn" type="button" data-cmd="next" aria-label="Intervall vor (Pfeil rechts)" title="Intervall vor (→)"><i data-icon="next"></i></button>
+          <button class="btn tbtn" type="button" id="btn-reset" title="Zurücksetzen (2× R)"><i data-icon="reset"></i><span>Reset</span></button>
+        </div>
+      </div>
+
+      <div class="quick">
+        <div class="quick__group" role="group" aria-label="Schnell ein- und ausblenden">
+          <span class="field-label">Einblenden</span>
+          <div class="row" id="quick-visibility">
+            <button type="button" class="chip" data-path="zones.left.visible">Links</button>
+            <button type="button" class="chip" data-path="zones.center.visible">Mitte</button>
+            <button type="button" class="chip" data-path="zones.right.visible">Rechts</button>
+            <button type="button" class="chip chip--master" data-path="global.visible">Alles</button>
+          </div>
+        </div>
+        <div class="quick__group">
+          <span class="field-label">Szenen</span>
+          <div class="row" id="quick-scenes"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================= Einstellungen -->
+    <aside class="panel" id="panel" aria-label="Einstellungen">
+      <nav class="tabs" role="tablist" aria-label="Bereiche">
+        <button type="button" role="tab" id="t-timer" aria-controls="tab-timer" aria-selected="true">Timer</button>
+        <button type="button" role="tab" id="t-left" aria-controls="tab-left" aria-selected="false">Links</button>
+        <button type="button" role="tab" id="t-center" aria-controls="tab-center" aria-selected="false">Mitte</button>
+        <button type="button" role="tab" id="t-right" aria-controls="tab-right" aria-selected="false">Rechts</button>
+        <button type="button" role="tab" id="t-layout" aria-controls="tab-layout" aria-selected="false">Layout</button>
+        <button type="button" role="tab" id="t-scenes" aria-controls="tab-scenes" aria-selected="false">Szenen</button>
+        <button type="button" role="tab" id="t-stream" aria-controls="tab-stream" aria-selected="false">Stream</button>
+      </nav>
+
+      <div class="tabpanels">
+        <!-- ------------------------------------------------ Timer -->
+        <section class="tabpanel" role="tabpanel" id="tab-timer" aria-labelledby="t-timer">
+          <div class="stack">
+            <div class="notice notice--warn" id="cfg-pending" hidden>
+              <p><b>Timer läuft.</b> Programm-Änderungen werden erst übernommen, wenn du sie bestätigst – der Timer startet dann neu.</p>
+              <div class="row">
+                <button type="button" class="btn btn--sm btn--primary" id="cfg-apply">Übernehmen &amp; zurücksetzen</button>
+                <button type="button" class="btn btn--sm btn--ghost" id="cfg-discard">Verwerfen</button>
+              </div>
+            </div>
+
+            <div class="grid">
+              <h3 class="section-title">Schnellstart</h3>
+              <div class="chips" id="timer-presets"></div>
+            </div>
+
+            <div class="field">
+              <span class="field-label" id="lbl-mode">Modus</span>
+              <div class="seg seg--block seg--wrap" data-cfg="mode" role="group" aria-labelledby="lbl-mode">
+                <button type="button" data-value="countdown">Countdown</button>
+                <button type="button" data-value="stopwatch">Stoppuhr</button>
+                <button type="button" data-value="emom">EMOM</button>
+                <button type="button" data-value="interval">Arbeit/Pause</button>
+                <button type="button" data-value="sequence">Zeitfolge</button>
+              </div>
+              <p class="hint" id="mode-hint"></p>
+            </div>
+
+            <div class="grid-2" data-mode="countdown">
+              <div class="field"><label for="cfg-duration">Dauer</label><input type="text" id="cfg-duration" data-cfg="durationSec" data-kind="time" inputmode="numeric" autocomplete="off" placeholder="12:00"></div>
+            </div>
+
+            <div class="grid-2" data-mode="stopwatch">
+              <div class="field"><label for="cfg-cap">Time Cap</label><input type="text" id="cfg-cap" data-cfg="capSec" data-kind="time" inputmode="numeric" autocomplete="off" placeholder="15:00"><span class="hint">0 = ohne Zeitlimit</span></div>
+            </div>
+
+            <div class="grid-2" data-mode="emom">
+              <div class="field"><label for="cfg-emom-every">Alle</label><input type="text" id="cfg-emom-every" data-cfg="emomIntervalSec" data-kind="time" inputmode="numeric" autocomplete="off" placeholder="1:00"></div>
+              <div class="field"><label for="cfg-emom-rounds">Runden</label><input type="number" id="cfg-emom-rounds" data-cfg="emomRounds" data-kind="int" min="1" max="500"></div>
+            </div>
+
+            <div class="grid" data-mode="interval">
+              <div class="grid-3">
+                <div class="field"><label for="cfg-rounds">Runden</label><input type="number" id="cfg-rounds" data-cfg="rounds" data-kind="int" min="1" max="200"></div>
+                <div class="field"><label for="cfg-work">Arbeit</label><input type="text" id="cfg-work" data-cfg="workSec" data-kind="time" inputmode="numeric" autocomplete="off" placeholder="0:20"></div>
+                <div class="field"><label for="cfg-rest">Pause</label><input type="text" id="cfg-rest" data-cfg="restSec" data-kind="time" inputmode="numeric" autocomplete="off" placeholder="0:10"></div>
+              </div>
+              <div class="grid-3">
+                <div class="field"><label for="cfg-sets">Sätze</label><input type="number" id="cfg-sets" data-cfg="sets" data-kind="int" min="1" max="20"></div>
+                <div class="field"><label for="cfg-setrest">Satzpause</label><input type="text" id="cfg-setrest" data-cfg="setRestSec" data-kind="time" inputmode="numeric" autocomplete="off" placeholder="1:00"></div>
+                <div class="field field--switch"><label class="switch"><input type="checkbox" data-cfg="skipLastRest" data-kind="bool"> <span>Letzte Pause weglassen</span></label></div>
+              </div>
+            </div>
+
+            <div class="grid" data-mode="sequence">
+              <div class="field">
+                <label for="cfg-sequence">Zeitfolge</label>
+                <textarea id="cfg-sequence" data-cfg="sequence" data-kind="text" rows="2" spellcheck="false" autocomplete="off" placeholder="2m + 30 + 1:00"></textarea>
+                <span class="error-text" id="seq-error" role="alert"></span>
+              </div>
+              <div class="seq-preview" id="seq-preview" aria-label="Erkannte Intervalle"></div>
+              <details class="help">
+                <summary>Schreibweise</summary>
+                <ul>
+                  <li><code>90</code> = 90 Sekunden · <code>1:30</code> = 1 Min 30 · <code>2m</code> = 2 Minuten · <code>1m30</code> = 1:30</li>
+                  <li><code>+</code> oder <code>,</code> = nächstes Intervall: <code>2m + 30 + 1:00</code></li>
+                  <li><code>4*1m</code> oder <code>4x1m</code> = viermal 1 Minute</li>
+                  <li>Klammern wiederholen Gruppen: <code>4*(1m + 30)</code></li>
+                  <li><code>p</code> markiert Pausen: <code>8*(20 + 10p)</code> = Tabata</li>
+                </ul>
+              </details>
+            </div>
+
+            <div class="grid-2">
+              <div class="field"><label for="cfg-prep">Vorlaufzeit (Sek.)</label><input type="number" id="cfg-prep" data-cfg="prepSec" data-kind="int" min="0" max="600"><span class="hint">0 = sofort starten</span></div>
+            </div>
+            <div class="field">
+              <span class="field-label" id="lbl-dir">Zählrichtung</span>
+              <div class="seg seg--block" data-cfg="direction" role="group" aria-labelledby="lbl-dir">
+                <button type="button" data-value="auto">Automatisch</button>
+                <button type="button" data-value="down">Abwärts</button>
+                <button type="button" data-value="up">Aufwärts</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="cfg-title">Titel über dem Timer</label>
+              <input type="text" id="cfg-title" data-cfg="title" data-kind="text" maxlength="80" autocomplete="off">
+              <span class="hint">Leer lassen für automatischen Titel.</span>
+            </div>
+
+            <p class="program-summary" id="program-summary"></p>
+
+            <div class="grid">
+              <h3 class="section-title">Signaltöne</h3>
+              <label class="switch"><input type="checkbox" data-path="timer.sound.enabled"> <span>Töne bei 3-2-1, Wechsel Arbeit/Pause und Ende</span></label>
+              <div class="field">
+                <span class="field-label" id="lbl-sound-out">Abspielen in</span>
+                <div class="seg seg--block" data-path="timer.sound.output" role="group" aria-labelledby="lbl-sound-out">
+                  <button type="button" data-value="overlay">Overlay (OBS)</button>
+                  <button type="button" data-value="control">Dieser Regie</button>
+                  <button type="button" data-value="both">Beide</button>
+                </div>
+                <span class="hint">„Overlay“: In OBS bei der Browserquelle „Audio über OBS steuern“ aktivieren, dann landen die Töne im Stream.</span>
+              </div>
+              <div class="row">
+                <label class="field-label" for="sound-vol">Lautstärke</label>
+                <input type="range" id="sound-vol" data-path="timer.sound.volume" min="0" max="100" step="5" style="flex:1">
+                <button type="button" class="btn btn--sm" id="sound-test">Test</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ------------------------------------------------ Zonen (dynamisch) -->
+        <section class="tabpanel" role="tabpanel" id="tab-left" aria-labelledby="t-left" hidden></section>
+        <section class="tabpanel" role="tabpanel" id="tab-center" aria-labelledby="t-center" hidden></section>
+        <section class="tabpanel" role="tabpanel" id="tab-right" aria-labelledby="t-right" hidden></section>
+
+        <!-- ------------------------------------------------ Layout -->
+        <section class="tabpanel" role="tabpanel" id="tab-layout" aria-labelledby="t-layout" hidden>
+          <div class="stack">
+            <div class="grid">
+              <h3 class="section-title">Vorlagen</h3>
+              <p class="hint">Ändern nur die Gestaltung – Texte, Logo und Timer bleiben erhalten.</p>
+              <div class="preset-list" id="preset-list"></div>
+            </div>
+
+            <div class="grid">
+              <h3 class="section-title">Ein-/Ausblenden</h3>
+              <label class="switch"><input type="checkbox" data-path="global.visible"> <span>Overlay sichtbar (Taste H)</span></label>
+              <div class="field">
+                <span class="field-label" id="lbl-anim">Animation</span>
+                <div class="seg seg--block" data-path="global.animation" role="group" aria-labelledby="lbl-anim">
+                  <button type="button" data-value="slide">Gleiten</button>
+                  <button type="button" data-value="fade">Blenden</button>
+                  <button type="button" data-value="zoom">Zoom</button>
+                  <button type="button" data-value="none">Keine</button>
+                </div>
+              </div>
+              <div class="row">
+                <label class="field-label" for="anim-ms">Dauer</label>
+                <input type="range" id="anim-ms" data-path="global.animMs" min="0" max="1500" step="50" style="flex:1">
+                <output class="badge" data-out="global.animMs" data-unit=" ms"></output>
+              </div>
+            </div>
+
+            <div class="grid">
+              <h3 class="section-title">Allgemein</h3>
+              <div class="field">
+                <label for="accent">Akzentfarbe (Signalkante, Markierungen)</label>
+                <div class="color-field"><input type="color" id="accent" data-path="global.accent"><input type="text" data-path="global.accent" data-kind="color" maxlength="7" aria-label="Akzentfarbe als Hex-Wert"></div>
+              </div>
+              <label class="switch"><input type="checkbox" data-path="global.textShadow"> <span>Textschatten für bessere Lesbarkeit</span></label>
+            </div>
+
+            <div class="grid">
+              <h3 class="section-title">Zurücksetzen</h3>
+              <div class="row">
+                <button type="button" class="btn" id="btn-reset-layout"><i data-icon="reset"></i>Standardlayout wiederherstellen</button>
+                <button type="button" class="btn btn--danger" id="btn-reset-all"><i data-icon="trash"></i>Alles auf Werkseinstellung</button>
+              </div>
+              <p class="hint">„Standardlayout“ behält Texte, Logo, Timer und Szenen. „Werkseinstellung“ behält nur die Szenen.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ------------------------------------------------ Szenen -->
+        <section class="tabpanel" role="tabpanel" id="tab-scenes" aria-labelledby="t-scenes" hidden>
+          <div class="stack">
+            <form class="grid" id="scene-form">
+              <h3 class="section-title">Aktuelles Layout speichern</h3>
+              <div class="row">
+                <label class="visually-hidden" for="scene-name">Name der Szene</label>
+                <input type="text" id="scene-name" maxlength="60" placeholder="z. B. Fran, Warm-up, Pause …" style="flex:1" autocomplete="off">
+                <button type="submit" class="btn btn--primary"><i data-icon="save"></i>Speichern</button>
+              </div>
+              <p class="hint">Eine Szene speichert Texte, Logo, Zonen, Gestaltung und Timer-Programm. Die ersten neun Szenen lassen sich mit den Tasten 1–9 laden.</p>
+            </form>
+            <ol class="scene-list" id="scene-list"></ol>
+            <div class="grid">
+              <h3 class="section-title">Sichern &amp; Übertragen</h3>
+              <div class="row">
+                <button type="button" class="btn btn--sm" id="btn-export-scenes"><i data-icon="download"></i>Szenen exportieren</button>
+                <label class="btn btn--sm"><i data-icon="upload"></i>Szenen importieren<input type="file" id="file-import-scenes" accept="application/json,.json" hidden></label>
+              </div>
+              <div class="row">
+                <button type="button" class="btn btn--sm" id="btn-export-all"><i data-icon="download"></i>Komplette Konfiguration sichern</button>
+                <label class="btn btn--sm"><i data-icon="upload"></i>Konfiguration laden<input type="file" id="file-import-all" accept="application/json,.json" hidden></label>
+              </div>
+              <p class="hint">Sicherungen sind normale JSON-Dateien – lokal speicherbar und auf jedem anderen Rechner wieder ladbar.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ------------------------------------------------ Stream -->
+        <section class="tabpanel" role="tabpanel" id="tab-stream" aria-labelledby="t-stream" hidden>
+          <div class="stack">
+            <div class="notice" id="mode-notice"></div>
+
+            <div class="field">
+              <label for="url-overlay">Overlay-URL für OBS / Streamlabs (Browserquelle, 1920 × 1080)</label>
+              <div class="row"><input type="text" id="url-overlay" readonly style="flex:1"><button type="button" class="btn btn--sm btn--icon" data-copy="url-overlay" aria-label="Overlay-URL kopieren"><i data-icon="copy"></i></button></div>
+            </div>
+            <div class="field">
+              <label for="url-camera">Kamera-Modus (ohne OBS, z. B. Bildschirmfreigabe in Zoom)</label>
+              <div class="row"><input type="text" id="url-camera" readonly style="flex:1"><button type="button" class="btn btn--sm btn--icon" data-copy="url-camera" aria-label="Kamera-URL kopieren"><i data-icon="copy"></i></button></div>
+            </div>
+            <div class="field">
+              <label for="url-remote">Smartphone-/Tablet-Fernbedienung</label>
+              <div class="row"><input type="text" id="url-remote" readonly style="flex:1"><button type="button" class="btn btn--sm btn--icon" data-copy="url-remote" aria-label="Fernbedienungs-URL kopieren"><i data-icon="copy"></i></button></div>
+              <span class="hint" id="remote-hint"></span>
+            </div>
+
+            <details class="help" open>
+              <summary>OBS Studio einrichten</summary>
+              <ol>
+                <li>Server starten (<code>npm start</code> bzw. <code>start-windows.bat</code>).</li>
+                <li>OBS: Quellen → <b>+</b> → <b>Browser</b>. URL oben einfügen, Breite <b>1920</b>, Höhe <b>1080</b>.</li>
+                <li>„Audio über OBS steuern“ aktivieren, wenn die Signaltöne in den Stream sollen.</li>
+                <li>Browserquelle über die Kameraquelle legen – der Hintergrund ist transparent.</li>
+                <li>Optional: Ansicht → Docks → <b>Benutzerdefinierte Browser-Docks</b> → diese Regie-Seite als Dock einbinden.</li>
+              </ol>
+            </details>
+            <details class="help">
+              <summary>Zoom (über OBS Virtual Camera)</summary>
+              <ol>
+                <li>In OBS rechts unten <b>Virtuelle Kamera starten</b>.</li>
+                <li>Zoom: Einstellungen → Video → Kamera <b>„OBS Virtual Camera“</b> wählen.</li>
+                <li>In Zoom „Mein Video spiegeln“ deaktivieren, sonst erscheint der Text für dich gespiegelt (für Teilnehmer ist er korrekt).</li>
+                <li>Signaltöne: in Zoom „Computerton freigeben“ nutzen oder den OBS-Audiomonitor als Mikrofon einbinden.</li>
+              </ol>
+            </details>
+            <details class="help">
+              <summary>Streamlabs Desktop</summary>
+              <ol>
+                <li>Quelle hinzufügen → <b>Browserquelle</b>, URL einfügen, 1920 × 1080.</li>
+                <li>Streamlabs nutzt ebenfalls Chromium – Darstellung wie in OBS.</li>
+              </ol>
+            </details>
+          </div>
+        </section>
+      </div>
+    </aside>
+  </main>
+
+  <dialog class="dlg" id="dlg-help" aria-labelledby="dlg-help-title">
+    <div class="dlg__body">
+      <h2 class="dlg__title" id="dlg-help-title">Tastaturkürzel</h2>
+      <dl class="keys" id="keys-list"></dl>
+      <p class="hint">Kürzel funktionieren, solange kein Eingabefeld aktiv ist – auch im Overlay-Fenster (z. B. im Kamera-Modus).</p>
+    </div>
+    <div class="dlg__foot"><button type="button" class="btn btn--primary" data-close>Schließen</button></div>
+  </dialog>
+
+  <dialog class="dlg" id="dlg-confirm" aria-labelledby="dlg-confirm-title">
+    <form method="dialog">
+      <div class="dlg__body">
+        <h2 class="dlg__title" id="dlg-confirm-title">Sicher?</h2>
+        <p id="dlg-confirm-text"></p>
+      </div>
+      <div class="dlg__foot">
+        <button type="submit" class="btn btn--ghost" value="cancel">Abbrechen</button>
+        <button type="submit" class="btn btn--primary" value="ok" id="dlg-confirm-ok">OK</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/core/timer.js"></script>
+  <script src="js/core/state.js"></script>
+  <script src="js/client/sync.js"></script>
+  <script src="js/client/audio.js"></script>
+  <script src="js/client/render.js"></script>
+  <script src="js/client/shortcuts.js"></script>
+  <script src="js/client/icons.js"></script>
+  <script src="js/client/control-zones.js"></script>
+  <script src="js/client/control.js"></script>
+</body>
+</html>

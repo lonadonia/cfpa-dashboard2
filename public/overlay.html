@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="de" data-bg="transparent">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Overlay · CrossFit Streaming</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/overlay.css">
+  <link rel="stylesheet" href="css/overlay-page.css">
+</head>
+<body>
+  <!-- 1920×1080-Bühne; wird bei anderen Fenstergrößen proportional skaliert -->
+  <div id="viewport"><div id="stage" aria-live="off"></div></div>
+
+  <div id="toast" class="ov-toast" role="status" aria-live="polite"></div>
+  <button id="sound-hint" class="ov-hint" type="button" hidden>Klicken, um Signaltöne in diesem Fenster zu aktivieren</button>
+
+  <script src="js/core/timer.js"></script>
+  <script src="js/core/state.js"></script>
+  <script src="js/client/sync.js"></script>
+  <script src="js/client/audio.js"></script>
+  <script src="js/client/render.js"></script>
+  <script src="js/client/shortcuts.js"></script>
+  <script src="js/client/overlay.js"></script>
+</body>
+</html>

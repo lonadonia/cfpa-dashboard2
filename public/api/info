@@ -1,0 +1,1 @@
+{"app":"crossfit-overlay","mode":"static","note":"Statisches Hosting ohne Server: Bedienoberfläche und Overlay synchronisieren sich nur innerhalb eines Browsers. Für OBS und Handy-Fernbedienung den lokalen Server (server.js) starten."}

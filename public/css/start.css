@@ -1,0 +1,130 @@
+/* Startseite (index.html) */
+
+.s-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px clamp(16px, 4vw, 48px);
+  border-bottom: 1px solid var(--line);
+}
+.s-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font: 600 20px/1 var(--font-display);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.s-brand b { font-weight: 800; color: var(--accent); }
+.brand__mark {
+  width: 24px;
+  height: 24px;
+  background:
+    linear-gradient(var(--accent), var(--accent)) left / 6px 100% no-repeat,
+    linear-gradient(var(--accent), var(--accent)) right / 6px 100% no-repeat,
+    linear-gradient(#fff, #fff) center / 100% 6px no-repeat;
+}
+
+main { display: grid; gap: clamp(28px, 5vw, 56px); padding: clamp(20px, 4vw, 48px); max-width: 1400px; margin: 0 auto; }
+
+.s-hero {
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: center;
+}
+.s-kicker {
+  margin: 0 0 12px;
+  font: 700 14px/1 var(--font-display);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.s-hero h1 {
+  margin: 0 0 16px;
+  font: 800 clamp(38px, 5.4vw, 72px)/.95 var(--font-display);
+  letter-spacing: .01em;
+  text-transform: uppercase;
+}
+.s-lead { margin: 0 0 24px; max-width: 54ch; font-size: 17px; color: var(--text-2); }
+.s-cta { min-height: 48px; padding: 12px 20px; font-size: 16px; }
+
+.s-preview {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .5);
+}
+.s-preview .cfo-stage { background: #15171a url('../assets/demo/demo-bg.svg') center / cover no-repeat; }
+.s-hero__preview .hint { margin: 10px 0 0; }
+
+.s-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.s-card {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 20px 18px 18px;
+  color: var(--text);
+  text-decoration: none;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  transition: border-color .15s ease, transform .15s ease;
+}
+.s-card::before { content: ''; position: absolute; left: 0; top: 18px; bottom: 18px; width: 4px; background: var(--accent); transform: scaleY(0); transition: transform .2s ease; }
+.s-card:hover { border-color: var(--line-strong); transform: translateY(-2px); }
+.s-card:hover::before, .s-card:focus-visible::before { transform: scaleY(1); }
+.s-card .i { width: 26px; height: 26px; color: var(--accent); }
+.s-card h2 { margin: 4px 0 0; font: 800 26px/1 var(--font-display); letter-spacing: .06em; text-transform: uppercase; }
+.s-card p { margin: 0; color: var(--text-2); }
+.s-card__url { margin-top: 6px; font: 500 12px/1.4 'Roboto Mono', monospace; color: var(--text-3); overflow-wrap: anywhere; }
+
+.s-mode {
+  display: grid;
+  gap: 8px;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--ok);
+  border-radius: var(--radius);
+}
+.s-mode.is-local { border-left-color: var(--warn); }
+.s-mode:empty { display: none; }
+.s-mode p, .s-mode ul { margin: 0; color: var(--text-2); }
+.s-mode ul { padding-left: 18px; }
+
+.s-steps ol { margin: 14px 0 0; padding: 0; list-style: none; counter-reset: step; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.s-steps li {
+  counter-increment: step;
+  position: relative;
+  padding: 52px 18px 18px;
+  color: var(--text-2);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.s-steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 18px;
+  top: 12px;
+  font: 800 32px/1 var(--font-display);
+  color: var(--accent);
+}
+.s-steps b { color: var(--text); }
+code { padding: 1px 5px; font: 500 13px/1.4 'Roboto Mono', monospace; color: var(--text); background: var(--surface-3); border-radius: 3px; overflow-wrap: anywhere; }
+
+.s-foot { padding: 24px clamp(16px, 4vw, 48px) 32px; color: var(--text-3); font-size: 13px; border-top: 1px solid var(--line); }
+
+@media (max-width: 1080px) {
+  .s-hero { grid-template-columns: minmax(0, 1fr); }
+  .s-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .s-cards, .s-steps ol { grid-template-columns: minmax(0, 1fr); }
+  .s-head { flex-wrap: wrap; }
+}

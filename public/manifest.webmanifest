@@ -1,0 +1,9 @@
+{
+  "name": "CrossFit Overlay – Fernbedienung",
+  "short_name": "Overlay",
+  "start_url": "remote.html",
+  "display": "standalone",
+  "background_color": "#0c0d0f",
+  "theme_color": "#0c0d0f",
+  "icons": [{ "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

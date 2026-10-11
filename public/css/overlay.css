@@ -1,0 +1,402 @@
+/*
+ * Overlay-Gestaltung „Competition Floor“
+ * Bildsprache einer Wettkampf-Übertragung: dunkle Grafitflächen, rote
+ * Signalkante, schräg angeschnittene Ecken (wie Hantelscheiben-Kanten),
+ * schmale Großbuchstaben und Rundenanzeige als Scheiben-Reihe.
+ * Alle Maße beziehen sich auf die 1920×1080-Bühne.
+ */
+
+.cfo-stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  transform-origin: 0 0;
+  color: #fff;
+  font-family: 'Inter', 'Segoe UI', Roboto, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  --accent: #E30613;
+  --anim-ms: 450ms;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+}
+
+.cfo-stage.has-shadow .cfo-zone {
+  text-shadow: 0 2px 10px rgba(0, 0, 0, .55), 0 0 2px rgba(0, 0, 0, .4);
+}
+
+/* ---------------------------------------------------------------- Zonen */
+
+.cfo-zone {
+  position: absolute;
+  box-sizing: border-box;
+}
+
+.cfo-zone__inner {
+  transition: opacity var(--anim-ms) var(--ease), transform var(--anim-ms) var(--ease), visibility 0s linear 0s;
+}
+
+.cfo-zone.is-hidden .cfo-zone__inner,
+.cfo-zone.is-empty .cfo-zone__inner {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--anim-ms) var(--ease), transform var(--anim-ms) var(--ease), visibility 0s linear var(--anim-ms);
+}
+
+/* Ein-/Ausblendrichtungen */
+.cfo-stage[data-anim="slide"] .cfo-zone[data-h="left"].is-hidden .cfo-zone__inner { transform: translateX(-70px); }
+.cfo-stage[data-anim="slide"] .cfo-zone[data-h="right"].is-hidden .cfo-zone__inner { transform: translateX(70px); }
+.cfo-stage[data-anim="slide"] .cfo-zone[data-h="center"][data-v="bottom"].is-hidden .cfo-zone__inner { transform: translateY(70px); }
+.cfo-stage[data-anim="slide"] .cfo-zone[data-h="center"][data-v="top"].is-hidden .cfo-zone__inner { transform: translateY(-70px); }
+.cfo-stage[data-anim="slide"] .cfo-zone[data-h="center"][data-v="middle"].is-hidden .cfo-zone__inner { transform: scale(.92); }
+.cfo-stage[data-anim="zoom"] .cfo-zone.is-hidden .cfo-zone__inner { transform: scale(.82); }
+.cfo-stage[data-anim="none"] *,
+.cfo-stage.cfo-stage--instant * { transition: none !important; }
+
+/* ---------------------------------------------------------------- Fläche */
+
+.cfo-zone__panel {
+  position: relative;
+  box-sizing: border-box;
+}
+
+.cfo-zone__panel.has-bg {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07);
+}
+
+.cfo-zone__panel.has-blur {
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+/* Signalkante in Akzentfarbe – liegt immer an der Bildschirmkante der Zone */
+.cfo-zone__panel.has-stripe::before {
+  content: '';
+  position: absolute;
+  background: var(--accent);
+}
+.cfo-zone[data-h="left"] .cfo-zone__panel.has-stripe::before { left: 0; top: 0; bottom: 0; width: 7px; }
+.cfo-zone[data-h="right"] .cfo-zone__panel.has-stripe::before { right: 0; top: 0; bottom: 0; width: 7px; }
+.cfo-zone[data-h="center"] .cfo-zone__panel.has-stripe::before { left: 0; right: 0; height: 6px; top: 0; }
+.cfo-zone[data-h="center"][data-v="top"] .cfo-zone__panel.has-stripe::before { top: auto; bottom: 0; }
+
+/* Angeschnittene Ecke */
+.cfo-zone[data-h="left"] .cfo-zone__panel.has-cut {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 26px), calc(100% - 26px) 100%, 0 100%);
+}
+.cfo-zone[data-h="right"] .cfo-zone__panel.has-cut {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 26px 100%, 0 calc(100% - 26px));
+}
+.cfo-zone[data-h="center"] .cfo-zone__panel.has-cut {
+  clip-path: polygon(26px 0, calc(100% - 26px) 0, 100% 26px, 100% 100%, 0 100%, 0 26px);
+}
+.cfo-zone[data-h="center"][data-v="top"] .cfo-zone__panel.has-cut {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 26px), calc(100% - 26px) 100%, 26px 100%, 0 calc(100% - 26px));
+}
+
+/* Etwas Abstand zur Signalkante */
+.cfo-zone[data-h="left"] .cfo-zone__panel.has-stripe > .cfo-el { margin-left: 8px; }
+.cfo-zone[data-h="right"] .cfo-zone__panel.has-stripe > .cfo-el { margin-right: 8px; }
+
+/* ---------------------------------------------------------------- Elemente */
+
+.cfo-el {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows var(--anim-ms) var(--ease), opacity var(--anim-ms) var(--ease);
+}
+
+.cfo-el__inner {
+  min-height: 0;
+  padding-top: 14px;
+}
+
+.cfo-el.is-first > .cfo-el__inner { padding-top: 0; }
+
+.cfo-el.is-hidden {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+
+.cfo-el.is-hidden > .cfo-el__inner {
+  overflow: hidden;
+  padding-top: 0;
+}
+
+/* Titel direkt unter dem Markennamen enger setzen */
+.cfo-el[data-id="title"] > .cfo-el__inner { padding-top: 4px; }
+.cfo-el[data-id="subtitle"] > .cfo-el__inner { padding-top: 8px; }
+
+.cfo-text {
+  line-height: 1.08;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+/* Logo */
+.cfo-logo {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+  vertical-align: top;
+}
+.cfo-logo[data-shape="circle"] { border-radius: 50%; aspect-ratio: 1 / 1; object-fit: cover; }
+.cfo-logo[data-shape="rounded"] { border-radius: 18px; }
+
+/* WOD-Text */
+.cfo-rich { line-height: 1.32; overflow-wrap: anywhere; }
+.cfo-rich__p { margin: 0; }
+.cfo-rich__h {
+  margin-top: .55em;
+  font-size: .7em;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.cfo-rich__h:first-child { margin-top: 0; }
+.cfo-rich__li {
+  position: relative;
+  padding-left: 1.05em;
+}
+.cfo-rich__li::before {
+  content: '';
+  position: absolute;
+  left: .1em;
+  top: .52em;
+  width: .36em;
+  height: .36em;
+  background: var(--accent);
+  transform: skewX(-14deg);
+}
+.cfo-rich__gap { height: .5em; }
+.cfo-rich strong { font-weight: 800; }
+
+/* Beschriftetes Feld (Trainer) */
+.cfo-labeled {
+  display: flex;
+  align-items: center;
+  gap: .45em;
+  line-height: 1.1;
+  flex-wrap: wrap;
+}
+.cfo-labeled__label,
+.cfo-clock__label {
+  display: inline-flex;
+  align-items: center;
+  gap: .35em;
+  padding: .16em .55em .14em;
+  font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  font-size: .62em;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--accent);
+  clip-path: polygon(.35em 0, 100% 0, calc(100% - .35em) 100%, 0 100%);
+  text-shadow: none;
+}
+.cfo-labeled__label.is-empty,
+.cfo-clock__label.is-empty,
+.cfo-clock__date.is-empty { display: none; }
+
+/* Live-Uhr */
+.cfo-clock {
+  display: flex;
+  align-items: center;
+  gap: .45em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.cfo-clock__dot {
+  width: .5em;
+  height: .5em;
+  border-radius: 50%;
+  background: #fff;
+  animation: cfo-blink 1.6s ease-in-out infinite;
+}
+.cfo-clock__date { opacity: .7; font-size: .7em; letter-spacing: .04em; }
+
+/* ---------------------------------------------------------------- Timer */
+
+.cfo-timer {
+  --timer-size: 190px;
+  --tc: #fff;
+  --dw: .52em;
+  --cw: .3em;
+  --ring-d: 3em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.cfo-zone[data-align="left"] .cfo-timer { align-items: flex-start; }
+.cfo-zone[data-align="right"] .cfo-timer { align-items: flex-end; }
+.cfo-zone[data-align="center"] .cfo-timer { align-items: center; }
+
+.cfo-timer__title {
+  font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  font-weight: 700;
+  font-size: max(20px, calc(var(--timer-size) * .17));
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: calc(var(--timer-size) * .04);
+}
+.cfo-timer__title.is-off { display: none; }
+
+.cfo-timer__face {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--timer-size);
+}
+
+.cfo-timer__digits {
+  display: flex;
+  line-height: .92;
+  color: var(--tc);
+  transition: color .35s ease;
+  white-space: nowrap;
+}
+.cfo-timer__digits .d { display: inline-block; width: var(--dw); text-align: center; }
+.cfo-timer__digits .c { display: inline-block; width: var(--cw); text-align: center; transform: translateY(-.06em); }
+
+.cfo-timer[data-status="paused"] .cfo-timer__digits { animation: cfo-blink 1.4s steps(2, jump-none) infinite; }
+.cfo-timer[data-status="done"] .cfo-timer__digits { animation: cfo-pulse .9s ease-in-out 3; }
+
+/* Ring (wie in der Referenz-Demo) */
+.cfo-timer__ring { display: none; }
+.cfo-timer[data-progress="ring"] .cfo-timer__face {
+  width: var(--ring-d);
+  height: var(--ring-d);
+}
+.cfo-timer[data-progress="ring"] .cfo-timer__ring {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.cfo-timer__ring-track { fill: rgba(0, 0, 0, .55); stroke: rgba(255, 255, 255, .12); stroke-width: 4; }
+.cfo-timer__ring-arc {
+  fill: none;
+  stroke: var(--tc);
+  stroke-width: 4;
+  transition: stroke-dashoffset .25s linear, stroke .35s ease;
+}
+
+/* Während des großen Vorlaufs tritt die kleine Anzeige zurück */
+.cfo-stage.is-prep .cfo-timer__face { opacity: .25; transition: opacity .3s ease; }
+
+/* Balken */
+.cfo-timer__bar {
+  display: none;
+  position: relative;
+  width: 100%;
+  height: max(8px, calc(var(--timer-size) * .05));
+  margin-top: calc(var(--timer-size) * .07);
+  background: rgba(255, 255, 255, .14);
+  overflow: hidden;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+}
+.cfo-timer[data-progress="bar"] .cfo-timer__bar { display: block; }
+.cfo-timer__bar.is-off { display: none !important; }
+.cfo-timer__bar-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--tc);
+  transform-origin: 0 50%;
+  transition: transform .25s linear, background-color .35s ease;
+}
+
+/* Phase + Runde */
+.cfo-timer__meta {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: calc(var(--timer-size) * .08);
+  font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  font-size: max(22px, calc(var(--timer-size) * .17));
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.cfo-timer__meta.is-empty { display: none; }
+.cfo-timer__phase {
+  padding: .14em .7em .12em;
+  color: #0b0c0e;
+  background: var(--tc);
+  clip-path: polygon(.4em 0, 100% 0, calc(100% - .4em) 100%, 0 100%);
+  text-shadow: none;
+  transition: background-color .35s ease;
+}
+.cfo-timer[data-status="done"] .cfo-timer__phase { animation: cfo-pulse .9s ease-in-out infinite; }
+.cfo-timer__phase.is-empty,
+.cfo-timer__round.is-empty { display: none; }
+
+/* Rundenpunkte */
+.cfo-timer__pips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  max-width: 100%;
+  margin-top: calc(var(--timer-size) * .08);
+}
+.cfo-timer__pips.is-empty { display: none; }
+.cfo-timer__pips i {
+  width: 22px;
+  height: 10px;
+  background: rgba(255, 255, 255, .22);
+  transform: skewX(-18deg);
+  transition: background-color .3s ease;
+}
+.cfo-timer__pips i.is-done { background: #fff; }
+.cfo-timer__pips i.is-current { background: var(--tc); animation: cfo-blink 1.2s ease-in-out infinite; }
+
+/* ---------------------------------------------------------------- Vorlauf groß */
+
+.cfo-prep {
+  --tc: #FFC531;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  padding-bottom: 240px;
+  box-sizing: border-box;
+  background: radial-gradient(circle at 50% 44%, rgba(0, 0, 0, .55) 0, rgba(0, 0, 0, 0) 40%);
+  transition: opacity .25s ease, visibility 0s linear .25s;
+}
+.cfo-prep.is-on { opacity: 1; visibility: visible; transition: opacity .2s ease; }
+.cfo-prep__num {
+  font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  font-weight: 800;
+  font-size: 460px;
+  line-height: 1;
+  color: var(--tc);
+  text-shadow: 0 10px 60px rgba(0, 0, 0, .65);
+  text-transform: uppercase;
+}
+.cfo-prep.is-pulse .cfo-prep__num { animation: cfo-count .9s var(--ease); }
+.cfo-prep.is-go .cfo-prep__num { color: #fff; font-size: 300px; letter-spacing: .04em; animation: cfo-go .9s var(--ease) forwards; text-shadow: 0 0 0 transparent, 10px 10px 0 var(--accent); }
+
+/* ---------------------------------------------------------------- Animationen */
+
+@keyframes cfo-blink { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+@keyframes cfo-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+@keyframes cfo-count { 0% { transform: scale(1.35); opacity: 0; } 25% { opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes cfo-go { 0% { transform: scale(.6); opacity: 0; } 25% { transform: scale(1.05); opacity: 1; } 80% { opacity: 1; } 100% { transform: scale(1.15); opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .cfo-stage *, .cfo-stage *::before { animation-duration: .001s !important; animation-iteration-count: 1 !important; }
+}

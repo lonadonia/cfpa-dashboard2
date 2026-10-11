@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Fernbedienung · CrossFit Streaming-Overlay</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0c0d0f">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/ui.css">
+  <link rel="stylesheet" href="css/remote.css">
+</head>
+<body>
+  <header class="r-head">
+    <span class="r-brand"><span class="brand__mark" aria-hidden="true"></span>Fernbedienung</span>
+    <span id="conn" class="status" role="status">Verbinde …</span>
+  </header>
+
+  <main class="r-main">
+    <section class="r-timer" aria-label="Timer">
+      <div class="r-timer__title" id="r-title"></div>
+      <div class="r-timer__time" id="r-time" aria-live="off">0:00</div>
+      <div class="r-timer__line" id="r-line"></div>
+    </section>
+
+    <section class="r-transport" aria-label="Timer-Steuerung">
+      <button type="button" class="btn r-btn" data-cmd="prev" aria-label="Intervall zurück"><i data-icon="prev"></i></button>
+      <button type="button" class="btn btn--primary r-btn r-btn--main" id="r-toggle"><i data-icon="play"></i><span>Start</span></button>
+      <button type="button" class="btn r-btn" data-cmd="next" aria-label="Intervall vor"><i data-icon="next"></i></button>
+    </section>
+    <button type="button" class="btn r-hold" id="r-reset" aria-describedby="r-reset-hint">
+      <span class="r-hold__fill" aria-hidden="true"></span>
+      <i data-icon="reset"></i><span>Reset – gedrückt halten</span>
+    </button>
+    <p class="hint r-center" id="r-reset-hint">Zum Zurücksetzen ca. 1 Sekunde gedrückt halten.</p>
+
+    <section class="r-block" aria-labelledby="h-vis">
+      <h2 class="section-title" id="h-vis">Einblenden</h2>
+      <div class="r-grid4" id="r-vis">
+        <button type="button" class="chip" data-path="zones.left.visible">Links</button>
+        <button type="button" class="chip" data-path="zones.center.visible">Mitte</button>
+        <button type="button" class="chip" data-path="zones.right.visible">Rechts</button>
+        <button type="button" class="chip chip--master" data-path="global.visible">Alles</button>
+      </div>
+    </section>
+
+    <section class="r-block" aria-labelledby="h-scenes">
+      <h2 class="section-title" id="h-scenes">Szenen</h2>
+      <div class="r-list" id="r-scenes"></div>
+    </section>
+
+    <section class="r-block" aria-labelledby="h-presets">
+      <h2 class="section-title" id="h-presets">Timer-Schnellstart</h2>
+      <div class="chips" id="r-presets"></div>
+    </section>
+
+    <details class="r-block r-edit">
+      <summary><span class="section-title">Texte schnell ändern</span></summary>
+      <div class="stack" id="r-edit">
+        <div class="field"><label for="e-wod">WOD / Trainingsinfos</label><textarea id="e-wod" data-path="elements.wod.text" rows="6" spellcheck="false"></textarea></div>
+        <div class="field"><label for="e-coach">Trainer</label><input type="text" id="e-coach" data-path="elements.coach.text" maxlength="200"></div>
+        <div class="field"><label for="e-notes">Hinweise</label><textarea id="e-notes" data-path="elements.notes.text" rows="2"></textarea></div>
+        <div class="field"><label for="e-title">Trainings-/Veranstaltungstitel</label><input type="text" id="e-title" data-path="elements.title.text" maxlength="200"></div>
+        <p class="hint">Änderungen erscheinen sofort im Overlay.</p>
+      </div>
+    </details>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog class="dlg" id="dlg-confirm" aria-labelledby="dlg-confirm-title">
+    <form method="dialog">
+      <div class="dlg__body">
+        <h2 class="dlg__title" id="dlg-confirm-title">Sicher?</h2>
+        <p id="dlg-confirm-text"></p>
+      </div>
+      <div class="dlg__foot">
+        <button type="submit" class="btn btn--ghost" value="cancel">Abbrechen</button>
+        <button type="submit" class="btn btn--primary" value="ok">OK</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="js/core/timer.js"></script>
+  <script src="js/core/state.js"></script>
+  <script src="js/client/sync.js"></script>
+  <script src="js/client/render.js"></script>
+  <script src="js/client/icons.js"></script>
+  <script src="js/client/remote.js"></script>
+</body>
+</html>
