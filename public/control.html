@@ -241,6 +241,27 @@
             </div>
 
             <div class="grid">
+              <h3 class="section-title">Hintergrundbild</h3>
+              <label class="switch"><input type="checkbox" data-path="global.background.show"> <span>Hintergrundbild anzeigen</span></label>
+              <div class="logo-box">
+                <div class="logo-thumb logo-thumb--wide" data-bg-thumb><img alt="Aktuelles Hintergrundbild"></div>
+                <div class="grid">
+                  <label class="btn btn--sm"><i data-icon="upload"></i>Hochladen / wechseln<input type="file" accept="image/png,image/jpeg,image/webp" hidden data-action="bg-upload"></label>
+                  <div class="row">
+                    <button type="button" class="btn btn--sm btn--danger" data-action="bg-remove"><i data-icon="trash"></i>Entfernen</button>
+                    <button type="button" class="btn btn--sm btn--ghost" data-action="bg-default">Kreidetafel</button>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <label class="field-label" for="bg-dim">Abdunkeln</label>
+                <input type="range" id="bg-dim" data-path="global.background.dim" min="0" max="90" step="5" style="flex:1">
+                <output class="badge" data-out="global.background.dim" data-unit=" %"></output>
+              </div>
+              <p class="hint">Das Bild liegt hinter allen Zonen und verdeckt in OBS die Kamera – gedacht für Pausen-, Start- oder Infoszenen (wie die Kreidetafel der Referenz). Für das Live-Training ausschalten.</p>
+            </div>
+
+            <div class="grid">
               <h3 class="section-title">Allgemein</h3>
               <div class="field">
                 <label for="accent">Akzentfarbe (Signalkante, Markierungen)</label>

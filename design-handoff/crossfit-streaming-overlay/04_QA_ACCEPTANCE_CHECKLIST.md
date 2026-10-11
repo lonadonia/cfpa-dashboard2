@@ -7,7 +7,7 @@ Statuses: VERIFIED_PASS · IMPLEMENTED_NOT_TESTED · BLOCKED_EXTERNAL · NOT_APP
 
 | Test | Command | Result |
 |---|---|---|
-| Unit tests (timer engine, sequence parser, reducer, scenes, normalisation) | `npm test` | VERIFIED_PASS – 27/27 |
+| Unit tests (timer engine, sequence parser, reducer, scenes, normalisation) | `npm test` | VERIFIED_PASS – 28/28 |
 | Browser E2E (server mode, own temp data dir) | `npm run test:e2e` | VERIFIED_PASS – 36/36, no console errors |
 | Static/test mode (http-server on `public/`, two tabs) | scratch script `local.js` | VERIFIED_PASS – LOCAL-01…05, no page errors |
 | Syntax | `node --check` on all JS | VERIFIED_PASS |

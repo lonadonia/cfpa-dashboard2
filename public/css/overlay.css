@@ -26,6 +26,19 @@
   text-shadow: 0 2px 10px rgba(0, 0, 0, .55), 0 0 2px rgba(0, 0, 0, .4);
 }
 
+/* ---------------------------------------------------------------- Hintergrundbild */
+
+.cfo-bg {
+  position: absolute;
+  inset: 0;
+  display: none;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.cfo-bg.is-on { display: block; }
+.cfo-bg__dim { position: absolute; inset: 0; background: #000; opacity: 0; }
+
 /* ---------------------------------------------------------------- Zonen */
 
 .cfo-zone {

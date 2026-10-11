@@ -292,6 +292,12 @@
       }
       img.hidden = !src;
     });
+    var bgThumb = $('[data-bg-thumb] img');
+    var bgSrc = state.global.background.src || '';
+    if (bgThumb.getAttribute('src') !== bgSrc) {
+      if (bgSrc) bgThumb.setAttribute('src', bgSrc); else bgThumb.removeAttribute('src');
+    }
+    bgThumb.hidden = !bgSrc;
   }
 
   // ---------------------------------------------------------------------------
@@ -330,6 +336,11 @@
     } else if (action === 'logo-default') {
       dispatch({ type: 'set', path: 'elements.' + id + '.src', value: S.defaults().elements.logo.src });
       dispatch({ type: 'set', path: 'elements.' + id + '.visible', value: true });
+    } else if (action === 'bg-remove') {
+      dispatch({ type: 'setMany', entries: [['global.background.show', false], ['global.background.src', '']] });
+      toast('Hintergrundbild entfernt');
+    } else if (action === 'bg-default') {
+      dispatch({ type: 'setMany', entries: [['global.background.src', S.defaults().global.background.src], ['global.background.show', true]] });
     }
   });
 
@@ -338,30 +349,35 @@
     if (input.getAttribute && input.getAttribute('data-action') === 'logo-upload' && input.files && input.files[0]) {
       uploadLogo(input.getAttribute('data-id'), input.files[0]);
       input.value = '';
+    } else if (input.getAttribute && input.getAttribute('data-action') === 'bg-upload' && input.files && input.files[0]) {
+      uploadBackground(input.files[0]);
+      input.value = '';
     }
   });
 
   document.addEventListener('dragover', function (ev) {
-    var thumb = ev.target.closest && ev.target.closest('[data-logo-thumb]');
+    var thumb = ev.target.closest && ev.target.closest('[data-logo-thumb], [data-bg-thumb]');
     if (!thumb) return;
     ev.preventDefault();
     thumb.classList.add('is-drop');
   });
   document.addEventListener('dragleave', function (ev) {
-    var thumb = ev.target.closest && ev.target.closest('[data-logo-thumb]');
+    var thumb = ev.target.closest && ev.target.closest('[data-logo-thumb], [data-bg-thumb]');
     if (thumb) thumb.classList.remove('is-drop');
   });
   document.addEventListener('drop', function (ev) {
-    var thumb = ev.target.closest && ev.target.closest('[data-logo-thumb]');
+    var thumb = ev.target.closest && ev.target.closest('[data-logo-thumb], [data-bg-thumb]');
     if (!thumb) return;
     ev.preventDefault();
     thumb.classList.remove('is-drop');
     var file = ev.dataTransfer && ev.dataTransfer.files && ev.dataTransfer.files[0];
-    if (file) uploadLogo(thumb.getAttribute('data-logo-thumb'), file);
+    if (!file) return;
+    if (thumb.hasAttribute('data-bg-thumb')) uploadBackground(file);
+    else uploadLogo(thumb.getAttribute('data-logo-thumb'), file);
   });
 
-  /** Verkleinert Bilder auf max. 800 px (Transparenz bleibt erhalten). */
-  function imageToDataUrl(file) {
+  /** Verkleinert Bilder auf max. `max` px (Standard 800, Transparenz bleibt erhalten). */
+  function imageToDataUrl(file, max, quality) {
     return new Promise(function (resolve, reject) {
       if (!/^image\/(png|jpeg|webp|gif|svg\+xml)$/.test(file.type)) return reject(new Error('Bitte PNG, JPG, WebP, GIF oder SVG verwenden'));
       if (file.size > 15 * 1024 * 1024) return reject(new Error('Datei ist größer als 15 MB'));
@@ -376,14 +392,14 @@
       var url = URL.createObjectURL(file);
       var img = new Image();
       img.onload = function () {
-        var max = 800;
+        max = max || 800;
         var scale = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
         var c = document.createElement('canvas');
         c.width = Math.max(1, Math.round(img.naturalWidth * scale));
         c.height = Math.max(1, Math.round(img.naturalHeight * scale));
         c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
         URL.revokeObjectURL(url);
-        var out = c.toDataURL('image/webp', 0.92);
+        var out = c.toDataURL('image/webp', quality || 0.92);
         if (out.indexOf('data:image/webp') !== 0) out = c.toDataURL('image/png');
         resolve(out);
       };
@@ -396,6 +412,14 @@
     imageToDataUrl(file).then(function (dataUrl) {
       dispatch({ type: 'setMany', entries: [['elements.' + id + '.src', dataUrl], ['elements.' + id + '.visible', true]] });
       toast('Logo aktualisiert');
+    }).catch(function (err) { toast(err.message); });
+  }
+
+  /** Hintergrundbild: Full-HD-Breite, etwas stärker komprimiert. */
+  function uploadBackground(file) {
+    imageToDataUrl(file, 1920, 0.85).then(function (dataUrl) {
+      dispatch({ type: 'setMany', entries: [['global.background.src', dataUrl], ['global.background.show', true]] });
+      toast('Hintergrundbild aktualisiert');
     }).catch(function (err) { toast(err.message); });
   }
 

@@ -97,7 +97,7 @@ Jeder Tab zeigt oben die Karte **„Position & Fläche“** der Zone und darunte
 - „Zone“: Element in eine andere Zone verschieben
 - Text-Formatierung: Schrift, Größe, Stärke, Farbe, Ausrichtung, Großbuchstaben
 
-**Logo:** „Hochladen / wechseln“ oder Bilddatei auf das Vorschaubild ziehen. PNG/SVG mit transparentem Hintergrund empfohlen. Große Bilder werden automatisch auf 800 px verkleinert. „Entfernen“ blendet das Logo aus, „Standard“ stellt das Platzhalter-Logo wieder her.
+**Logo:** „Hochladen / wechseln“ oder Bilddatei auf das Vorschaubild ziehen. PNG/SVG mit transparentem Hintergrund empfohlen. Große Bilder werden automatisch auf 800 px verkleinert. „Entfernen“ blendet das Logo aus, „Standard“ stellt das Logo „The Online Box“ wieder her.
 
 **WOD-Text:** jede Zeile wird eine Zeile im Overlay.
 
@@ -116,6 +116,7 @@ AMRAP 12 Min
 
 - **Vorlagen:** Broadcast (Standard), Kreidetafel (Aufbau wie die Referenz-Demo), Minimal (ohne Flächen). Vorlagen ändern nur die Gestaltung.
 - **Ein-/Ausblenden:** ganzes Overlay (Taste H), Animation Gleiten/Blenden/Zoom/Keine, Dauer.
+- **Hintergrundbild:** ein-/ausschalten, eigenes Bild hochladen (wird auf 1920 px verkleinert), „Kreidetafel“ = Bild der Referenz, Abdunkeln 0–90 %. Achtung: das Bild verdeckt in OBS die Kamera – für Pausen-, Start- oder Infoszenen gedacht; per Szene speicherbar.
 - **Akzentfarbe** und **Textschatten**.
 - **Standardlayout wiederherstellen:** setzt Positionen und Gestaltung zurück, behält Texte, Logo, Timer und Szenen.
 - **Alles auf Werkseinstellung:** behält nur die gespeicherten Szenen.

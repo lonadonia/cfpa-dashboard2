@@ -98,3 +98,14 @@ test('Szenen-Import erzeugt neue IDs', () => {
   assert.equal(s.scenes.length, 1);
   assert.equal(s.scenes[0].name, 'Import');
 });
+
+test('Hintergrundbild: ein-/ausschalten, Quelle wird geprüft, Abdunkeln begrenzt', () => {
+  let s = S.defaults();
+  assert.equal(s.global.background.show, false);
+  s = S.reduce(s, { type: 'set', path: 'global.background.show', value: true });
+  assert.equal(s.global.background.show, true);
+  const before = s;
+  assert.equal(S.reduce(s, { type: 'set', path: 'global.background.src', value: 'javascript:alert(1)' }), before);
+  s = S.reduce(s, { type: 'set', path: 'global.background.dim', value: 300 });
+  assert.equal(s.global.background.dim, 90);
+});

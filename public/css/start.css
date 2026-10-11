@@ -58,7 +58,7 @@ main { display: grid; gap: clamp(28px, 5vw, 56px); padding: clamp(20px, 4vw, 48p
   border-radius: var(--radius);
   box-shadow: 0 30px 80px rgba(0, 0, 0, .5);
 }
-.s-preview .cfo-stage { background: #15171a url('../assets/demo/demo-bg.svg') center / cover no-repeat; }
+.s-preview .cfo-stage { background: #15171a url('../assets/backgrounds/kreidetafel.jpg') center / cover no-repeat; }
 .s-hero__preview .hint { margin: 10px 0 0; }
 
 .s-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }

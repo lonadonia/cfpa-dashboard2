@@ -99,7 +99,7 @@ Gaps: workout text only editable via modal (no formatting), no logo upload, no z
 |---|---|---|---|
 | A-001 | "Mitte" means the timer zone, placed bottom-centre by default (keeps athletes visible) | medium | client can drag zone; preset "Kreidetafel" mirrors reference placement |
 | A-002 | A small local Node server is acceptable (free) because OBS uses its own browser storage | high | stated in offer §5 |
-| A-003 | Client logo must not be published in the public GitHub repo | high | neutral placeholder shipped; client uploads logo |
+| A-003 | Client logo and reference chalkboard image may be used in the repo (user decision) | high | restored as defaults; repo is public – confirm with client |
 | A-004 | German UI; overlay labels editable for English sessions | high | labels editor in timer card |
 
 ## 8. Risks

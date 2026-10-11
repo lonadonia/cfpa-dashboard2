@@ -68,6 +68,8 @@ Kurzfassung (ausführlich mit Fehlerbehebung: [`docs/STREAMING.md`](docs/STREAMI
 
 **Zonen** – Position per Maus/Finger in der Vorschau verschieben oder exakt per Zahl, Verankerung, Breite, Skalierung, Hintergrundfläche (Farbe, Deckkraft, Ecken, Signalkante). Elemente lassen sich zwischen den Zonen verschieben und umsortieren.
 
+**Hintergrundbild** – optional hinter allen Zonen (Kreidetafel wie in der Referenz oder eigenes Foto hochladen), abdunkelbar – für Pausen-, Start- und Infoszenen.
+
 **Weiteres** – Szenen speichern/laden (Tasten 1–9), Export/Import als JSON, drei Vorlagen (Broadcast, Kreidetafel wie Referenz, Minimal), Standardlayout wiederherstellen, Ein-/Ausblendanimationen, Tastaturkürzel, Fernbedienung mit „Gedrückt halten zum Reset“, Kamera-Modus, optionaler Zugriffsschlüssel.
 
 Bedienungsanleitung: [`docs/ANLEITUNG.md`](docs/ANLEITUNG.md)
@@ -98,7 +100,7 @@ start-mac.command         Start per Doppelklick (macOS/Linux)
 ## Tests
 
 ```bash
-npm test                 # 27 Unit-Tests: Timer, Zeitfolgen-Parser, Zustand, Szenen
+npm test                 # 28 Unit-Tests: Timer, Zeitfolgen-Parser, Zustand, Szenen
 npm run test:e2e         # 36 Browser-Prüfungen (benötigt einmalig: npm install --no-save playwright && npx playwright install chromium)
 ```
 

@@ -119,5 +119,5 @@ Gesamt 6 Werktage ab Auftrag (siehe Meilensteine). Der Prototyp ist bereits test
 3. **Fernsteuerung nur im selben WLAN;** Gäste-WLANs blockieren teils Verbindungen zwischen Geräten.
 4. **Bildschirm des Handys:** Die Sperre „Bildschirm anlassen“ funktioniert im lokalen Netz (ohne HTTPS) nicht automatisch – ggf. Display-Timeout am Handy verlängern.
 5. **Signaltöne in normalen Browserfenstern** starten erst nach einem Klick (Browser-Regel); in OBS sofort.
-6. **Logo und Inhalte** stellt der Auftraggeber bereit; das Logo der Referenz-Demo ist aus Rechtegründen nicht im Repository enthalten und wird per Upload eingesetzt.
+6. **Logo, Kreidetafel-Bild und Inhalte** stammen vom Auftraggeber (aus der Referenz-Demo übernommen) und bleiben dessen Eigentum; beides ist in der Regie austauschbar.
 7. Keine Zusatzkosten, keine Abos, keine Lizenzgebühren.

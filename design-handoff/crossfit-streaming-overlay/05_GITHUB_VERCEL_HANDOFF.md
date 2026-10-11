@@ -6,10 +6,10 @@ Implementation:     BUILT – overlay, control UI, phone remote, zero-dependency
 Stack:              Plain HTML5/CSS/JavaScript (no build, no runtime deps) + Node.js ≥ 18 server (node:http only)
                     Verified with Node.js 22.22.0, Chromium 141 (Playwright 1.56.1)
 Local path:         /home/user/cfpa-dashboard2
-Local build:        NOT_APPLICABLE (no build step) – `npm test` PASS 27/27, `npm run test:e2e` PASS 36/36
+Local build:        NOT_APPLICABLE (no build step) – `npm test` PASS 28/28, `npm run test:e2e` PASS 36/36
 GitHub status:      PUSHED
 GitHub repo URL:    https://github.com/lonadonia/cfpa-dashboard2
-Visibility:         public (verified via GitHub API) – client logo deliberately NOT committed
+Visibility:         public (verified via GitHub API) – client logo and chalkboard image committed at the user's request
 Branch:             claude/elegant-feynman-ieql5j
 Commit SHA:         4c6318cb8cf5656901e94e88eb9a781ce3da8879 (initial implementation; later handoff commits on the same branch)
 Vercel readiness:   VERIFIED_READY – static output `public/`, `vercel.json` (framework null, no install/build, outputDirectory public);
@@ -36,5 +36,5 @@ The static deployment (Vercel/any web host) runs in **test mode**: control and o
 2. **Share the test link** with the client via the artifact's Share menu (it is private until shared), or send the Vercel preview once it exists.
 3. **Field test (milestone 4):** on a Windows/macOS PC with OBS Studio + Zoom run protocol S-1…S-8 in `docs/STREAMING.md` and record versions/results.
 4. **Before sending the offer:** review `docs/ANGEBOT.md` (prices per feature, dates, wording) – it is marked as a draft.
-5. **Repository visibility:** the repo is public. If the client's material (logo, WOD texts) should stay private, switch the repo to private before adding it.
+5. **Repository visibility:** the repo is public and now contains the client's logo and the reference chalkboard image (restored at the user's request). Switch the repo to private if the client does not want these published.
 6. **Merge:** open a pull request from `claude/elegant-feynman-ieql5j` into `main` when ready (not created automatically).

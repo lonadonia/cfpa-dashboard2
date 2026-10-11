@@ -52,7 +52,9 @@
         animation: 'slide', // slide | fade | zoom | none
         animMs: 450,
         accent: '#E30613',
-        textShadow: true
+        textShadow: true,
+        // Optionales Hintergrundbild hinter den Zonen (deckt das Kamerabild in OBS ab!)
+        background: { show: false, src: 'assets/backgrounds/kreidetafel.jpg', dim: 0 }
       },
       zones: {
         left: { visible: true, h: 'left', v: 'top', mx: 48, my: 48, width: 470, align: 'left', scale: 100, panel: panel({}) },
@@ -60,10 +62,10 @@
         right: { visible: true, h: 'right', v: 'top', mx: 48, my: 48, width: 450, align: 'left', scale: 100, panel: panel({}) }
       },
       elements: {
-        logo: { type: 'logo', name: 'Logo', zone: 'left', order: 1, visible: true, src: 'assets/logos/logo-platzhalter.svg', size: 150, shape: 'none', align: 'zone' },
-        brand: { type: 'text', name: 'Markentitel', zone: 'left', order: 2, visible: true, text: 'Deine Box', style: style('barlow', 56, '#FFFFFF', 800, true) },
+        logo: { type: 'logo', name: 'Logo', zone: 'left', order: 1, visible: true, src: 'assets/logos/the-online-box.png', size: 150, shape: 'none', align: 'zone' },
+        brand: { type: 'text', name: 'Markentitel', zone: 'left', order: 2, visible: true, text: 'The Online Box', style: style('barlow', 56, '#FFFFFF', 800, true) },
         title: { type: 'text', name: 'Trainings-/Veranstaltungstitel', zone: 'left', order: 3, visible: true, text: 'Home WOD · Live', style: style('barlow', 34, '#E30613', 700, true) },
-        subtitle: { type: 'text', name: 'Untertitel', zone: 'left', order: 4, visible: true, text: 'Live-Training für zu Hause', style: style('inter', 22, '#D5D8DE', 500, false) },
+        subtitle: { type: 'text', name: 'Untertitel', zone: 'left', order: 4, visible: true, text: 'Fitness, die funktioniert', style: style('inter', 22, '#D5D8DE', 500, false) },
         freeText: { type: 'text', name: 'Freier Text', zone: 'left', order: 5, visible: false, text: 'Heute: Ganzkörper – alle Level willkommen', style: style('inter', 20, '#FFFFFF', 400, false) },
         timer: { type: 'timer', name: 'Timer', zone: 'center', order: 1, visible: true },
         wodTitle: { type: 'text', name: 'WOD-Überschrift', zone: 'right', order: 1, visible: true, text: 'WOD', style: style('barlow', 46, '#FFFFFF', 800, true) },
@@ -284,7 +286,7 @@
   var NUMBER_LIMITS = {
     size: [8, 2000], width: [120, 1920], mx: [-1920, 1920], my: [-1080, 1080], scale: [30, 300],
     opacity: [0, 100], radius: [0, 200], padding: [0, 200], animMs: [0, 3000], weight: [100, 900],
-    order: [-100, 100], warnSec: [0, 3600], alertSec: [0, 3600], volume: [0, 100]
+    order: [-100, 100], dim: [0, 90], warnSec: [0, 3600], alertSec: [0, 3600], volume: [0, 100]
   };
 
   /** Prüft einen einzelnen Schreibzugriff. Gibt den bereinigten Wert oder undefined zurück. */

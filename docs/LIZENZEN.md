@@ -29,12 +29,12 @@ Alle Schriften stehen unter der **SIL Open Font License 1.1** (OFL). Sie dürfen
 
 | Datei | Herkunft | Rechte |
 |---|---|---|
-| `public/assets/logos/logo-platzhalter.svg` | für dieses Projekt erstellt | gehört zum individuellen Code (siehe `LICENSE.md`) |
-| `public/assets/demo/demo-bg.svg` | für dieses Projekt erstellt (stilisierte Trainingsfläche, nur Vorschau) | wie oben |
-| `public/assets/icon.svg`, Icons in `js/client/icons.js` | für dieses Projekt gezeichnet | wie oben |
+| `public/assets/logos/the-online-box.png` | Logo des Auftraggebers aus der Referenz-Demo | Rechte beim Auftraggeber – nicht Teil der Rechteübertragung |
+| `public/assets/backgrounds/kreidetafel.jpg` | Kreidetafel-Hintergrund aus der Referenz-Demo des Auftraggebers | Herkunft/Lizenz der Bilddatei vom Auftraggeber bestätigen lassen; jederzeit in der Regie austauschbar |
+| `public/assets/icon.svg`, Icons in `js/client/icons.js` | für dieses Projekt gezeichnet | gehört zum individuellen Code (siehe `LICENSE.md`) |
 | Hochgeladene Logos (in `data/state.json`) | vom Anwender | Rechte beim Anwender |
 
-**Nicht enthalten:** Logo, Hintergrundbild und Schrift „Chalkboy“ der Referenz-Demo sowie Bootstrap, jQuery, Popper und Font Awesome aus der Referenz. Die Referenz diente nur als funktionales Vorbild; es wurde kein Code daraus übernommen.
+**Aus der Referenz übernommen:** nur Logo und Kreidetafel-Bild (Assets des Auftraggebers). **Nicht enthalten:** Schrift „Chalkboy“ sowie Bootstrap, jQuery, Popper und Font Awesome aus der Referenz. Die Referenz diente nur als funktionales Vorbild; es wurde kein Code daraus übernommen.
 
 ## Signaltöne
 

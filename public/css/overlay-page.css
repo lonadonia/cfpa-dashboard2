@@ -25,7 +25,7 @@ html[data-bg="checker"] body {
   background-size: 40px 40px;
   background-position: 0 0, 0 20px, 20px -20px, -20px 0;
 }
-html[data-bg="demo"] #stage { background: #15171a url('../assets/demo/demo-bg.svg') center / cover no-repeat; }
+html[data-bg="demo"] #stage { background: #15171a url('../assets/backgrounds/kreidetafel.jpg') center / cover no-repeat; }
 html[data-bg="green"] body { background: #00b140; }
 html[data-bg="black"] body { background: #000; }
 

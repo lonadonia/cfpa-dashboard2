@@ -418,6 +418,10 @@
     stage.classList.add('cfo-stage', 'cfo-stage--instant');
     var zones = {};
     var elements = {};
+    var bgLayer = h('div', 'cfo-bg');
+    var bgDim = h('div', 'cfo-bg__dim');
+    bgLayer.appendChild(bgDim);
+    stage.appendChild(bgLayer);
     var prep = h('div', 'cfo-prep');
     var prepNum = h('span', 'cfo-prep__num');
     prep.appendChild(prepNum);
@@ -497,6 +501,16 @@
       setStyle(stage, '--accent', g.accent || '#E30613');
       setStyle(stage, '--anim-ms', (Number(g.animMs) || 0) + 'ms');
       toggle(stage, 'has-shadow', g.textShadow);
+
+      // Hintergrundbild (optional, z. B. Kreidetafel wie in der Referenz)
+      var bg = g.background || {};
+      var bgSrc = bg.show && bg.src ? bg.src : '';
+      if (bgLayer.getAttribute('data-src') !== bgSrc) {
+        bgLayer.setAttribute('data-src', bgSrc);
+        bgLayer.style.backgroundImage = bgSrc ? 'url("' + bgSrc.replace(/["\\\n]/g, '') + '")' : '';
+      }
+      toggle(bgLayer, 'is-on', !!bgSrc);
+      setStyle(bgDim, 'opacity', String((Number(bg.dim) || 0) / 100));
 
       S.ZONES.forEach(function (zid) {
         var z = state.zones[zid];
